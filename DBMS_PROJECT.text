@@ -1,0 +1,78 @@
+CREATE DATABASE DBMS;
+USE DBMS;
+
+CREATE TABLE Students (
+    StudentID INT PRIMARY KEY AUTO_INCREMENT,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50 
+    Email VARCHAR(100),
+    Phone VARCHAR(20),
+    DateOfBirth DATE,
+    Gender ENUM('Male', 'Female', 'Other'),
+    Address VARCHAR(250)
+);
+
+CREATE TABLE Courses (
+    CourseID INT PRIMARY KEY,
+    CourseName VARCHAR(100),
+    Instructor_ID INT,
+    FOREIGN KEY (Instructor_ID) REFERENCES Instructors(Instructor_ID)
+    Description TEXT
+);
+
+CREATE TABLE Enrollment (
+    EnrollmentID INT PRIMARY KEY AUTO_INCREMENT,
+    StudentID INT,
+    CourseID INT,
+    EnrollmentDate DATE,
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
+);
+
+CREATE TABLE Instructors (
+    InstructorID INT PRIMARY KEY AUTO_INCREMENT,
+    FirstName VARCHAR(40),
+    LastName VARCHAR(40),
+    Email VARCHAR(40),
+    Department VARCHAR(40)
+);
+
+CREATE TABLE Grades (
+    Grade_ID INT PRIMARY KEY,
+    Student_ID INT,
+    Course_ID INT,
+    Grade REAL,
+    FOREIGN KEY (Student_ID) REFERENCES Students(Student_ID),
+    FOREIGN KEY (Course_ID) REFERENCES Courses(Course_ID)
+)
+
+-- Inserting  students
+INSERT INTO Students (StudentID, FirstName, LastName, Email, Phone, DateOfBirth, Gender, Address, CGPA)
+VALUES ('479', 'Farhad', 'Rakib', 'farhadrakib@gmail.com', '123456', '2000-01-01', 'Male', 'Dhaka');
+VALUES ('312', 'Rafiqul', 'Rafu', 'rafiqulislam@gmail.com', '123456', '2000-01-01', 'Male', 'Dhaka');
+VALUES ('476', 'AL', 'Amin', 'alamin@gmail.com', '1234567890', '2004-02-10', 'Male', 'Dhaka');
+
+-- Inserting courses
+INSERT INTO Courses (CourseID, CourseName, Instructor, Description, Credits)
+VALUES ('CSE111','DBMS', 'Kristy Saha', 'Introduction to DBMS');
+VALUES ('CSE222','OOP', 'Noor Masrur', 'C++');
+VALUES ('CSE333','Data Structure', 'Mushfiq Rahman', 'Introduction to Data Structure');
+
+-- Enrolling a student in a course
+INSERT INTO Enrollment (StudentID, CourseID, EnrollmentDate)
+VALUES ('476', 'CSE222', '2024-03-24');
+VALUES ('312', 'CSE111', '2024-03-24');
+VALUES ('479', 'CSE222', '2024-03-24');
+
+--Calculate CGPA for a student
+SELECT Student_id, AVG(grade) AS CGPA
+FROM Grades
+WHERE Student_id = (Student_id)
+GROUP BY Student_id;
+
+--Find students with the highest grades
+SELECT s.student_id, s.first_name, s.last_name, MAX(g.grade) AS highest_grade
+FROM Students s
+JOIN Grades g ON s.student_id = g.student_id
+GROUP BY s.student_id, s.first_name, s.last_name
+ORDER BY highest_grade DESC;
